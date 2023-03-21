@@ -1,10 +1,10 @@
 import React from "react";
 import DriverCheckbox from "../components/driverCheckbox";
 
-const IndexPage = () => (
+const Test = () => (
   <div>
     <DriverCheckbox />
   </div>
 );
 
-export default IndexPage
+export default Test;
