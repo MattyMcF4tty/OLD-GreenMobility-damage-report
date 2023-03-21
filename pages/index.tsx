@@ -1,7 +1,10 @@
 import Link from 'next/link'
+import DriverCheckbox from "../components/driverCheckbox";
 
 const IndexPage = () => (
-  <h1 className='text-4xl'>Hello</h1>
-)
+  <div>
+    <DriverCheckbox />
+  </div>
+);
 
 export default IndexPage
