@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import DriverCheckbox from "../components/driverCheckbox";
+import Text from "../components/textarea";
 
 const IndexPage = () => (
   <div>
-    <DriverCheckbox />
+    <Text />
   </div>
 );
 
