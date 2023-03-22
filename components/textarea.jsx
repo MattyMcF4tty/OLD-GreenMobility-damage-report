@@ -15,31 +15,10 @@ function Text(){
     }
     return(
         <div className="Text">
-            <textarea onChange={change} value = {val} maxLength={textMax} placeholder="Skriv noget her" className="resize-none"/>
-            <p>{currentTextCount}/{textMax}</p>
+            <textarea onChange={change} value = {val} maxLength={textMax} placeholder="Skriv noget her" className="resize-none border-2 border-black rounded-lg px-1"/>
+            <p className="px-1">{currentTextCount}/{textMax}</p>
         </div>
     )
 }
-
-
-/* function Textarea (){
-    let textMax = 500;
-    let currentTextCount = 0;
-    let remainingCharacters = textMax;
-
-    function CharacterCounter (){
-        remainingCharacters = textMax - currentTextCount;
-    }
-    
-
-    return(
-        <div>
-            <label htmlFor="message" className="block mb-2 text-sm font-medium text-black dark:text-white">SKRIV LA</label>
-            <textarea id="message" maxLength={textMax} rows={4} className="resize-none block p-2.5 w-full text-sm text-black bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="SKRIV"></textarea>
-            <p >{currentTextCount}/{textMax}</p>
-        
-        </div>
-    )
-} */
 
 export default Text;
