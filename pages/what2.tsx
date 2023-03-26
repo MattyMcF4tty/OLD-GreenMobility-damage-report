@@ -1,3 +1,4 @@
+import { Console } from "console";
 import React, {useState} from "react";
 import InputField from "../components/inputfield";
 
@@ -23,9 +24,7 @@ class accidentInformation{
     carNumberPlate:String;
 };
 
-function handleWhatPageSubmission() {
 
-};
 
 function WhatPage () {
     /* Different data collected */
@@ -40,6 +39,10 @@ function WhatPage () {
         setDriverInfo({ ...driverInfo, [id]: value });
         setAccidentInfo({...accidentInfo, [id]: value});
     }
+
+    function handleWhatPageSubmission() {
+    console.log(driverInfo, accidentInfo)
+    };
 
     return(
         <div>
@@ -220,7 +223,7 @@ function WhatPage () {
                     maxLength={50}
                     />
                 </div>
-                <button onSubmit={handleWhatPageSubmission}></button>
+                <button onClick={handleWhatPageSubmission}>Hejsa</button>
             </form>
         </div>
     );
