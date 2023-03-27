@@ -1,71 +1,122 @@
-import React, {useRef, useState} from "react";
-import * as logic from "../logic/whatPageLogic";
+import { Console } from "console";
+import React, {useState, useEffect} from "react";
+import InputField from "../components/inputfield";
+import DriverInformationForm from '../components/driver_info_form';
+import AccidentLocationMap from '../components/accident_location_map'
 
-const whatPageInfo = new logic.whatPageInformation;
-const driverInfo = new logic.driverInformation;
+class accidentInformation{
+    time:String;
+    day:String;
+    month:String;
+    year:String;
+    city:String;
+    street:String;
+    streetNumber:String;
+    zipCode:Number;
+    carNumberPlate:String;
+};
 
-
-
-
-function handleWhatPageSubmit(whatPageInfo:whatPageInformation, greenCarNumberplate:String, driverInfo:driverInformation, locationInfo:locationInformation, dateInfo:dateInformation){
-
-}
 
 
 function WhatPage () {
-    //TODO: Fix det her, så der ikke så mange variabler hvis muligt
-    //TODO: Fix så de ikke er possibly undefined
-    //TODO: Make it possible to access whatPageInfo from another page
-    const [isChecked, setIsChecked] = useState(true); 
-    const driverFirstName = useRef().current.value;
-    const driverLastName = useRef().current;
-    const driverAddress = useRef().current;
-    const driverSocialSecurityNumber = useRef().current;
-    const driverDrivingLicenseNumber = useRef().current;
-    const driverPhoneNumber = useRef().current;
-    const driverEmail = useRef().current;
-    const greenCarNumberplate = useRef().current;
+    /* Different data collected */
+    const [driverInfoCheckbox, setDriverInfoCheckbox] = useState(true); 
+    const [accidentInfo, setAccidentInfo] = useState(new accidentInformation());
+    const [greenCarNumberPlate, setGreenCarNumberPlate] = useState(String);
 
+    
+    const OnChange = (event) => {
+        const { id, value } = event.target;
+        setAccidentInfo({...accidentInfo, [id]: value});
+    }
 
+    useEffect(() => {
+        localStorage.setItem("GreenCarNumberPlate", greenCarNumberPlate)
+    }, [greenCarNumberPlate])
 
+    return(
+        <div>
+            <form className="flex flex-col">
 
-    return (
-        <form className="flex flex-col">
-            <label htmlFor="numberplate">Numberplate of GreenMobility Car</label>
-            <input id="numberplate" type="text" ref={greenCarNumberplate} />
+                {/* TODO: Check on det der skrives faktisk er en real green nummerplade */}
+                {/* Car number plate collection */}
+                <InputField 
+                id={"carNumberPlate"} 
+                type={"text"} 
+                labelText={"GreenMobility cars number plate"}
+                required={true}
+                value={greenCarNumberPlate}
+                onChange={(event) => setGreenCarNumberPlate(event.target.value)}
+                maxLength={50}
+                />
 
-            <input type="checkbox" checked={isChecked} onChange={(event) => setIsChecked(event.target.checked)}/>
-            {!isChecked &&
-                <div id="driverInformation" className="flex flex-col">
-                    <p>Driver Information</p>
-                    <label htmlFor="firstName">First Name</label>
-                    <input required={true} ref={driverFirstName} id="firstName" type="text" />
-
-                    <label htmlFor="lastName">Last Name</label>
-                    <input ref={driverLastName} id="lastName" type="text" />
-
-                    {/* TODO: google maps integration, så den udfylder sammen med brugeren */}
-                    <label htmlFor="address">Address</label>
-                    <input ref={driverAddress} id="address" type="text" />
-
-                    <label htmlFor="socialSecurityNumber">Social Security Number</label>
-                    <input ref={driverSocialSecurityNumber} id="socialSecurityNumber" type="number" />
-
-                    <label htmlFor="drivingLicenseNumber">Driving License Number</label>
-                    <input ref={driverDrivingLicenseNumber} id="drivingLicenseNumber" type="number" />
-
-                    <label htmlFor="phoneNumber">Phone number</label>
-                    <input ref={driverPhoneNumber} id="phoneNumber" type="number" />
-
-                    <label htmlFor="email">Email</label>
-                    <input ref={driverEmail} id="email" type="text" />
+                {/* Driver Information Collection */}
+                <label htmlFor="">Was driver and renter the same person?</label>
+                <div id="DriverInfoCheckbox">
+                    <label htmlFor="Yes" >Yes</label>
+                    <input className="mr-3"
+                    id="Yes" type="checkbox" checked={driverInfoCheckbox} onChange={() => setDriverInfoCheckbox(true)}/>
+                    
+                    <label htmlFor="No">No</label>
+                    <input id="No" type="checkbox" checked={!driverInfoCheckbox} onChange={() => setDriverInfoCheckbox(false)}/>
                 </div>
-            }
+                {!driverInfoCheckbox &&
+                    <DriverInformationForm />
+                }
 
-            <button type="submit" onClick={handleWhatPageSubmit()}>Click</button>
-        </form>
-        
+                {/* TODO: Lav en klokkeslæt funktion, så de nemmere kan vælge tidspunkt */}
+                {/* Accident Date Collection */}
+                <div>
+                    <InputField 
+                    id={"time"} 
+                    type={"text"} 
+                    labelText={"Time of accident"}
+                    required={true}
+                    value={accidentInfo.time}
+                    onChange={OnChange}
+                    maxLength={50}
+                    />
+
+                    <InputField 
+                    id={"day"} 
+                    type={"text"} 
+                    labelText={"Day of accident"}
+                    required={true}
+                    value={accidentInfo.day}
+                    onChange={OnChange}
+                    maxLength={50}
+                    />
+
+                    <InputField 
+                    id={"month"} 
+                    type={"text"} 
+                    labelText={"Month of accident"}
+                    required={true}
+                    value={accidentInfo.month}
+                    onChange={OnChange}
+                    maxLength={50}
+                    />
+
+                    <InputField 
+                    id={"year"} 
+                    type={"text"} 
+                    labelText={"Year of accident"}
+                    required={true}
+                    value={accidentInfo.year}
+                    onChange={OnChange}
+                    maxLength={50}
+                    />
+                </div>
+
+                {/* TODO: Make google help user with autofil of location */}
+                {/* Accident location collection */}
+                <div>
+                    <AccidentLocationMap />
+                </div>
+                <button>Hejsa</button>
+            </form>
+        </div>
     );
-};
+}
 
 export default WhatPage;

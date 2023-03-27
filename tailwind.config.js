@@ -7,9 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        Mgreen: {
-          100: '#3ea635',
-          200: '#24382f'
+        MainGreen: {
+          100: '#E6EEE5',
+          200: '#BBD6A0',
+          300: '#3EA635'
         }
       }
     },
