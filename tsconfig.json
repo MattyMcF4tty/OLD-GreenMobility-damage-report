@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/driverCheckbox.jsx"  ],
+, "components/driverCheckbox.jsx", "logic/whatPageLogic.jsx"  ],
   "exclude": [
     "node_modules"
   ]
