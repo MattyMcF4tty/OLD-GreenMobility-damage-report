@@ -7,7 +7,7 @@ function AccidentLocationMap() {
     })
 
     const [accidentLocation, setAccidentLocation] = useState({lat: 48.8684, lng: 2.2945});
-    const [accidentAddress, setAccidentAddress] = useState({});
+    const [accidentAddress, setAccidentAddress] = useState("");
 
     useEffect(() => {
         if('geolocation' in navigator) {
@@ -20,6 +20,9 @@ function AccidentLocationMap() {
 
 
     const geocodeLatLng = (latlng) => {
+        /* Checks if map is loaded before checking reverse geocode address */
+        if (!isLoaded) return;
+
         const geocoder = new window.google.maps.Geocoder();
     
         geocoder

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { driverInformation } from "../components/driver_info_form";
+import { driverInformation } from "../components/OldComponents/driver_info_form";
 
 function confirmationPage () {
     const [driverInfo, setDriverInfo] = useState<driverInformation | null>(null);

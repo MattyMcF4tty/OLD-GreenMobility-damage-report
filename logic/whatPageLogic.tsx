@@ -22,11 +22,3 @@ export class driverInformation{
     phoneNumber:Number;
     email:String;
 }
-
-
-
-//Functions and other logic
-export function handleDriverInformation(){
-
-    
-};
