@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from "react";
-import Inputfield from "../components/custom_inputfield";
+import {Inputfield, LocationField, TimeDateField, YesNo} from "../components/custom_inputfields";
 import DriverInfoForm, {driverInformation} from "../components/whatPage/driver_information_form";
-import YesNo from "../components/yes_no_checkbox";
 
 export default function What() {
-    const [GreenCarNumberPlate, setGreenCarNumberPlate] = useState<string>();
+    const [GreenCarNumberPlate, setGreenCarNumberPlate] = useState<string>("");
     const [showDriverInfoForm, setShowDriverInfoForm] = useState<boolean>(false);
+    const [accidentTime, setAccidentTime] = useState<string>("");
+    const [accidentDate, setAccidentDate] = useState<string>("");
+
+
     const [driverInfo, setDriverInfo] = useState<driverInformation>()
 
     useEffect(() => {
@@ -13,7 +16,7 @@ export default function What() {
     }, [driverInfo]);
     
     return (
-        <div>
+        <div className="p-4">
             {/* GreenMobility car numberplate collection */}
             <div>
                 <Inputfield 
@@ -42,7 +45,22 @@ export default function What() {
 
             {/* Accident time and date collection */}
             <div>
-                
+                <TimeDateField 
+                    labelText="When did the accident occur?"
+                    id="Accident"
+                    required={true}
+                    timeChange={setAccidentTime}
+                    dateChange={setAccidentDate}
+                />
+            </div>
+
+            {/* Accident location collection */}
+            <div>
+                <LocationField
+                    labelText="Where did the accident occur?"
+                    includeMap={true}
+                    id="accidentLocation"
+                />
             </div>
         </div>
     );
