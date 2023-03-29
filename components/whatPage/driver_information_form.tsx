@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Inputfield from "./custom_inputfield";
+import Inputfield from "../custom_inputfield";
 
 export class driverInformation{
     firstName:string;

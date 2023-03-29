@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 interface YesNoProps {
     id:string;
     labelText:string;
-    onChange: (isChecked: boolean) => void;
+    onChange: (checked: boolean) => void;
 }
 
 export default function YesNo(props: YesNoProps) {
@@ -30,19 +30,19 @@ export default function YesNo(props: YesNoProps) {
             <div id={id}>
                 <label htmlFor={"Yes"+id}>Yes</label>
                 <input
-                id={"Yes"+id}
-                type = "checkbox"
-                checked = {checked === 1}
-                onChange = {() => setChecked(1)}
+                    id={"Yes"+id}
+                    type = "checkbox"
+                    checked = {checked === 1}
+                    onChange = {() => setChecked(1)}
                 />
 
                 {/* No  */}
                 <label htmlFor={"No"+id}>No</label>
                 <input
-                id={"No"+id}
-                type = "checkbox"
-                checked = {checked === 2}
-                onChange = {() => setChecked(2)}
+                    id={"No"+id}
+                    type = "checkbox"
+                    checked = {checked === 2}
+                    onChange = {() => setChecked(2)}
                 />
             </div>
         </div>

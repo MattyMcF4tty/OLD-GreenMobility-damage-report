@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Inputfield from "../components/custom_inputfield";
-import DriverInfoForm, {driverInformation} from "../components/driver_information_form";
+import DriverInfoForm, {driverInformation} from "../components/whatPage/driver_information_form";
 import YesNo from "../components/yes_no_checkbox";
 
 export default function What() {
@@ -30,7 +30,7 @@ export default function What() {
                 <YesNo 
                     labelText="Was driver and renter of the GreenMobility car the same person?"
                     id="ShowDriverInfoForm"
-                    onChange={isChecked => setShowDriverInfoForm(isChecked)}
+                    onChange={setShowDriverInfoForm}
                 />
 
                 {showDriverInfoForm &&
