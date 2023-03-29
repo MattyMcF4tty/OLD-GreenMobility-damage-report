@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import Bike from "../components/opposite_information/bike_information_form";
+import Text from "../components/textarea";
+import Car from "../components/opposite_information/car_information_form";
+import Person from "../components/opposite_information/person_information_form";
 
 function WherePage() {
   const [isVehicleChecked, setIsVehicleChecked] = useState(false);
@@ -50,14 +53,25 @@ function WherePage() {
               onChange={(event) => setIsBikeChecked(event.target.checked)}
             />
             <p>cykel</p>
-            <input className="" type="checkbox" id="whatvehicle" />
-            <p>person</p>
-            <input className="" type="checkbox" id="whatvehicle" />
+            <input
+              className=""
+              type="checkbox"
+              id="person"
+              checked={isPersonChecked}
+              onChange={(event) => setIsPersonChecked(event.target.checked)}
+            />
+            <p>fodgænger</p>
+            <input type="checkbox" name="" id="other" />
             <p>andet</p>
           </div>
         </div>
       )}
+      {isCarChecked && <Car />}
+
       {isBikeChecked && <Bike />}
+
+      {isPersonChecked && <Person />}
+
       <div>
         <label htmlFor="persondamage">Personskade?</label>
         <div className="flex flex-row">
@@ -79,7 +93,11 @@ function WherePage() {
           <p>nej</p>
         </div>
       </div>
-      {isPersonDamageChecked && <div></div>}
+      {isPersonDamageChecked && (
+        <div>
+          <Text></Text>
+        </div>
+      )}
     </form>
   );
 }
