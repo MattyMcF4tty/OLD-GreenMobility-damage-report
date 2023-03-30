@@ -1,6 +1,7 @@
 import { kMaxLength } from "buffer";
 import React, { useState, useRef, useEffect } from "react";
 import Text from "../textarea";
+import YesNo from "../yes_no_checkbox";
 
 class oppositeBikeInformation {
   ebike: boolean;
@@ -11,31 +12,19 @@ class oppositeBikeInformation {
 }
 
 function Bike() {
-  const [isEbikeChecked, setIsEbikeChecked] = useState<0 | 1 | 2>(0);
+  const [isEbikeChecked, setIsEbikeChecked] = useState(true);
   const [isPersonDamageChecked, setIsPersonDamageChecked] = useState(false);
 
   return (
     <div className="flex flex-col items-start">
-      <label htmlFor="Ebike">er det en elcykel?</label>
-      <div className="flex flex-row">
-        <input
-          className=""
-          type="checkbox"
+      <div>
+        <YesNo
           id="Ebike"
-          checked={isEbikeChecked === 1}
-          onChange={(event) => setIsEbikeChecked(1)}
+          labelText="Is it an electric bike?"
+          onChange={setIsEbikeChecked}
         />
-        <p>ja</p>
-        <input
-          className=""
-          type="checkbox"
-          id="Ebike"
-          checked={isEbikeChecked === 2}
-          onChange={(event) => setIsEbikeChecked(2)}
-        />
-        <p>nej</p>
       </div>
-      {isEbikeChecked === 1 && (
+      {isEbikeChecked && (
         <div className="flex flex-col">
           <label htmlFor="Ebike">Navn på modpart</label>
           <input

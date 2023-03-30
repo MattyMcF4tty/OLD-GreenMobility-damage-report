@@ -3,6 +3,10 @@ import Bike from "../components/opposite_information/bike_information_form";
 import Text from "../components/textarea";
 import Car from "../components/opposite_information/car_information_form";
 import Person from "../components/opposite_information/person_information_form";
+import YesNo from "../components/yes_no_checkbox";
+import Inputfield from "../components/custom_inputfield";
+import Checkbox from "../components/custom_checkbox";
+import Other from "../components/opposite_information/other_information_form";
 
 function WherePage() {
   const [isVehicleChecked, setIsVehicleChecked] = useState(false);
@@ -14,55 +18,37 @@ function WherePage() {
 
   return (
     <form className="flex flex-col items-start">
-      <label htmlFor="collisionCar">Sammenstød med andet køretøj?</label>
-      <div className="flex flex-row">
-        <input
-          className=""
-          type="checkbox"
-          id="collisionCar"
-          checked={isVehicleChecked}
-          onChange={(event) => setIsVehicleChecked(true)}
+      <div>
+        <YesNo
+          id="whatvehicle"
+          labelText="Collision with another vehicle/person?"
+          onChange={setIsVehicleChecked}
         />
-        <p>ja</p>
-        <input
-          className=""
-          type="checkbox"
-          id="collisionCar"
-          checked={!isVehicleChecked}
-          onChange={(event) => setIsVehicleChecked(false)}
-        />
-        <p>nej</p>
       </div>
       {isVehicleChecked && (
         <div>
           <label htmlFor="whatvehicle">Hvad for et køretøj?</label>
-          <div className="flex flex-row">
-            <input
-              className=""
-              type="checkbox"
-              id="whatvehicle"
-              checked={isCarChecked}
-              onChange={(event) => setIsCarChecked(event.target.checked)}
+          <div id="whatvehicle" className="flex flex-row">
+            <Checkbox
+              id="vehicleCar"
+              labelText="Car"
+              onChange={setIsCarChecked}
             />
-            <p>bil</p>
-            <input
-              className=""
-              type="checkbox"
-              id="whatvehicle"
-              checked={isBikeChecked}
-              onChange={(event) => setIsBikeChecked(event.target.checked)}
+            <Checkbox
+              id="vehicleBike"
+              labelText="Bike"
+              onChange={setIsBikeChecked}
             />
-            <p>cykel</p>
-            <input
-              className=""
-              type="checkbox"
-              id="person"
-              checked={isPersonChecked}
-              onChange={(event) => setIsPersonChecked(event.target.checked)}
+            <Checkbox
+              id="vehiclePerson"
+              labelText="Pedestrian"
+              onChange={setIsPersonChecked}
             />
-            <p>fodgænger</p>
-            <input type="checkbox" name="" id="other" />
-            <p>andet</p>
+            <Checkbox
+              id="vehicleOther"
+              labelText="Other"
+              onChange={setIsOtherChecked}
+            />
           </div>
         </div>
       )}
@@ -71,6 +57,8 @@ function WherePage() {
       {isBikeChecked && <Bike />}
 
       {isPersonChecked && <Person />}
+
+      {isOtherChecked && <Other />}
 
       <div>
         <label htmlFor="persondamage">Personskade?</label>
