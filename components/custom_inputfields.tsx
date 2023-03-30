@@ -1,5 +1,4 @@
-import { useJsApiLoader, GoogleMap, Marker} from "@react-google-maps/api";
-import { time } from "console";
+import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
 import React, { useEffect, useState } from "react";
 
 
@@ -41,8 +40,8 @@ interface TimeDateProps {
     id:string;
     labelText:string;
     required:boolean;
-    timeChange: (isValue:string) => void;
-    dateChange: (isValue:string) => void;
+    timeChange: (Value:string) => void;
+    dateChange: (Value:string) => void;
 };
 
 export function TimeDateField(props: TimeDateProps) {
@@ -105,10 +104,12 @@ export function YesNo(props: YesNoProps) {
 
     }, [checked]);
 
+
     return (
         <div className="flex flex-col mb-4">
             <label htmlFor={id}>{labelText}</label>
 
+            {/* Yes */}
             <div id={id} className="flex flex-row items-center">
                 <label htmlFor={"Yes"+id}>Yes</label>
                 <input className="accent-MainGreen-300"
@@ -132,95 +133,70 @@ export function YesNo(props: YesNoProps) {
 };
 
 
-/* -----Location inputfield---------------------------------------------------- */
+/* -----Location Inputfield---------------------------------------------------- */
 interface LocationFieldProps {
-    includeMap:boolean;
-    labelText:string;
-    id:string;
+    id: string;
+    labelText: string;
+    onMoveCoords: ({lat, lng}: {lat: number, lng: number}) => void;
 }
 
 export function LocationField(props: LocationFieldProps) {
-    const { includeMap, labelText, id } = props;
-    const [accidentLocation, setAccidentLocation] = useState({lat: 48.8684, lng: 2.2945});
-    const [accidentAddress, setAccidentAddress] = useState<string>("");
+    const { id, labelText, onMoveCoords } = props;
 
+    const [markerCoords, setMarkerCoords] = useState<{lat: number, lng: number}>({lat: 55.6843528344547, lng: 12.585598005943817})
 
-    //TODO: Make typeable and dragable google maps location integration
-    if (includeMap){
-        return (
-            <div className="flex flex-col mb-4">  
-                <label htmlFor={id}>{labelText}</label>
-                <input className="bg-MainGreen-100"
-                value={accidentAddress}
-                onChange={(event) => setAccidentAddress(event.target.value)}
-                />
-                <Map
-                id={id}
-                setLocation={setAccidentLocation}
-                />
-            </div>
-        );
-    };
-};
-
-
-/* -----google maps inputfield---------------------------------------------------- */
-interface MapProps {
-    id:string;
-    setLocation: (accidentLocation) => void;
-    markers: [Marker];
-}
-
-export function Map(props: MapProps) {
-    const { id } = props;
-    const [accidentLocation, setAccidentLocation] = useState({lat: 48.8684, lng: 2.2945});
-
-    const {isLoaded} = useJsApiLoader({
+    const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    })
-
+    });
 
     useEffect(() => {
-        if('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(({ coords }) => {
-                const { latitude, longitude } = coords;
-                setAccidentLocation({ lat: latitude, lng: longitude });
-            });
-        };
-    }, []);
+        onMoveCoords(markerCoords); 
+    }, [markerCoords])
 
-    if (!isLoaded) {
+    if (loadError) {
         return (
             <div>
-                Google Maps Loading...
+                <label htmlFor={id}>{labelText}</label>
+                <p id={id}>Error loading Google maps</p>
             </div>
         );
-    };
-
-
-    //TODO: Make typeable and dragable google maps location integration
-    if (isLoaded){
+    }
+    else if (!isLoaded) {
         return (
-            <GoogleMap
-            id={id}
-            mapContainerStyle={{width: '100%', height: '50vh'}}
-            center={accidentLocation}
-            zoom={15}
-            options={{
-                zoomControl: false,
-                streetViewControl: false,
-                mapTypeControl: false,
-                fullscreenControl: false,
-            }}
-            >
-                <Marker 
-                position={accidentLocation} 
-                draggable={true}
-                onDragEnd={(event) => {
-                const newPos = {lat: event.latLng.lat(), lng: event.latLng.lng()};
-                setAccidentLocation(newPos)}}
-                />
-            </GoogleMap>
+            <div>
+                <label htmlFor={id}>{labelText}</label>
+                <p id={id}>Loading Google maps...</p>
+            </div>
+        );
+    }
+    else {
+        /* TODO: Maybe make it possible to enter address */
+        return ( 
+            <div className="w-full h-full">
+                <label htmlFor={id}>{labelText}</label>
+                <div id={id} className="w-full h-full">
+                    <GoogleMap
+                    id={"map"+id}
+                    center={markerCoords}
+                    mapContainerStyle={{
+                        height: "100%", 
+                        width: "100%"
+                    }}
+                    zoom={10}
+                    options = {{
+                        fullscreenControl: false,
+                        zoomControl: false,
+                        streetViewControl: false,
+                    }}
+                    >
+                        <Marker
+                        position={markerCoords}
+                        draggable={true}
+                        onDragEnd={(event) => setMarkerCoords({ lat: event.latLng.lat(), lng: event.latLng.lng() })}
+                        />
+                    </GoogleMap>
+                </div>
+            </div>
         );
     };
 };

@@ -1,30 +1,34 @@
 import React, {useEffect, useState} from "react";
-import {Inputfield, LocationField, TimeDateField, YesNo} from "../components/custom_inputfields";
+import {Inputfield, TimeDateField, YesNo, LocationField} from "../components/custom_inputfields";
 import DriverInfoForm, {driverInformation} from "../components/whatPage/driver_information_form";
 
 export default function What() {
-    const [GreenCarNumberPlate, setGreenCarNumberPlate] = useState<string>("");
+    const [greenCarNumberplate, setgreenCarNumberplate] = useState<string>("");
     const [showDriverInfoForm, setShowDriverInfoForm] = useState<boolean>(false);
     const [accidentTime, setAccidentTime] = useState<string>("");
     const [accidentDate, setAccidentDate] = useState<string>("");
+    const [accidentLocation, setAccidentLocation] = useState<{ lat: number; lng: number }>();
 
 
     const [driverInfo, setDriverInfo] = useState<driverInformation>()
 
     useEffect(() => {
-        console.log(driverInfo)
-    }, [driverInfo]);
+        localStorage.setItem("greenCarNumberplate", greenCarNumberplate)
+        localStorage.setItem("accidentTime", accidentTime)
+        localStorage.setItem("accidentDate", accidentDate)
+        localStorage.setItem("accidentLocation", JSON.stringify(accidentLocation))
+    }, [driverInfo, accidentLocation, accidentTime, accidentDate]);
     
     return (
-        <div className="p-4">
+        <form className="p-4 w-full">
             {/* GreenMobility car numberplate collection */}
             <div>
                 <Inputfield 
                     labelText="Numberplate of GreenMobility car"
-                    id = "GreenCarNumberPlateInput"
+                    id = "greenCarNumberplateInput"
                     type = {"text"}
                     required={true}
-                    onChange={setGreenCarNumberPlate}
+                    onChange={setgreenCarNumberplate}
                 />
             </div>
             
@@ -55,13 +59,17 @@ export default function What() {
             </div>
 
             {/* Accident location collection */}
-            <div>
-                <LocationField
-                    labelText="Where did the accident occur?"
-                    includeMap={true}
-                    id="accidentLocation"
+            <div className="w-full h-80 mb-14">
+                <LocationField 
+                id="accidentLocation"
+                labelText="Mark or write where the accident took place"
+                onMoveCoords={setAccidentLocation}
                 />
             </div>
-        </div>
+            <div className="flex flex-row w-full place-content-between h-10">
+                <button disabled={true} className="w-2/5 border-2 border-black text-black">Previous</button>
+                <button className="w-2/5 bg-MainGreen-300 text-white">Next</button>
+            </div>
+        </form>
     );
 };
