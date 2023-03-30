@@ -144,6 +144,37 @@ export function LocationField(props: LocationFieldProps) {
     const [accidentLocation, setAccidentLocation] = useState({lat: 48.8684, lng: 2.2945});
     const [accidentAddress, setAccidentAddress] = useState<string>("");
 
+
+    //TODO: Make typeable and dragable google maps location integration
+    if (includeMap){
+        return (
+            <div className="flex flex-col mb-4">  
+                <label htmlFor={id}>{labelText}</label>
+                <input className="bg-MainGreen-100"
+                value={accidentAddress}
+                onChange={(event) => setAccidentAddress(event.target.value)}
+                />
+                <Map
+                id={id}
+                setLocation={setAccidentLocation}
+                />
+            </div>
+        );
+    };
+};
+
+
+/* -----google maps inputfield---------------------------------------------------- */
+interface MapProps {
+    id:string;
+    setLocation: (accidentLocation) => void;
+    markers: [Marker];
+}
+
+export function Map(props: MapProps) {
+    const { id } = props;
+    const [accidentLocation, setAccidentLocation] = useState({lat: 48.8684, lng: 2.2945});
+
     const {isLoaded} = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     })
@@ -154,49 +185,42 @@ export function LocationField(props: LocationFieldProps) {
             navigator.geolocation.getCurrentPosition(({ coords }) => {
                 const { latitude, longitude } = coords;
                 setAccidentLocation({ lat: latitude, lng: longitude });
-            })
-        }
+            });
+        };
     }, []);
-    //TODO: Make typeable and dragable google maps location integration
-    if (includeMap){
+
+    if (!isLoaded) {
         return (
-            <div className="flex flex-col mb-4">  
-                <label htmlFor={id}>{labelText}</label>
-                <div id={id}>
-                    <input className="bg-MainGreen-100 h-10 rounded-b-none"
-                    type="text" 
-                    value={accidentAddress}
-                    />
-
-                    {isLoaded ? (
-                        <GoogleMap
-                        mapContainerStyle={{width: '100%', height: '50vh'}}
-                        center={accidentLocation}
-                        zoom={15}
-                        options={{
-                            zoomControl: false,
-                            streetViewControl: false,
-                            mapTypeControl: false,
-                            fullscreenControl: false,
-                        }}
-                        >
-                            <Marker 
-                            position={accidentLocation} 
-                            draggable={true}
-                            onDragEnd={(event) => {
-                            const newPos = {lat: event.latLng.lat(), lng: event.latLng.lng()};
-                            setAccidentLocation(newPos)}}
-                            />
-                        </GoogleMap>)
-                    : (
-                        <div>
-                            Loading Google Maps...
-                        </div>
-                    )}
-
-                </div>
-
+            <div>
+                Google Maps Loading...
             </div>
+        );
+    };
+
+
+    //TODO: Make typeable and dragable google maps location integration
+    if (isLoaded){
+        return (
+            <GoogleMap
+            id={id}
+            mapContainerStyle={{width: '100%', height: '50vh'}}
+            center={accidentLocation}
+            zoom={15}
+            options={{
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
+            }}
+            >
+                <Marker 
+                position={accidentLocation} 
+                draggable={true}
+                onDragEnd={(event) => {
+                const newPos = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+                setAccidentLocation(newPos)}}
+                />
+            </GoogleMap>
         );
     };
 };
