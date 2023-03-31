@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Inputfield, TimeDateField, YesNo, LocationField} from "../components/custom_inputfields";
+import { NavButtons } from "../components/navigation";
 import DriverInfoForm, {driverInformation} from "../components/whatPage/driver_information_form";
 
 export default function What() {
@@ -13,16 +14,17 @@ export default function What() {
     const [driverInfo, setDriverInfo] = useState<driverInformation>()
 
     useEffect(() => {
-        localStorage.setItem("greenCarNumberplate", greenCarNumberplate)
-        localStorage.setItem("accidentTime", accidentTime)
-        localStorage.setItem("accidentDate", accidentDate)
-        localStorage.setItem("accidentLocation", JSON.stringify(accidentLocation))
-    }, [driverInfo, accidentLocation, accidentTime, accidentDate]);
+        sessionStorage.setItem("greenCarNumberplate", greenCarNumberplate)
+        sessionStorage.setItem("accidentTime", accidentTime)
+        sessionStorage.setItem("accidentDate", accidentDate)
+        sessionStorage.setItem("accidentLocation", JSON.stringify(accidentLocation))
+    }, [greenCarNumberplate, driverInfo, accidentLocation, accidentTime, accidentDate]);
     
     return (
-        <form className="p-4 w-full">
+        <form className="w-full">
             {/* GreenMobility car numberplate collection */}
             <div>
+            {/* TODO: Make it so you can only type a valid numberplate for the country where the accident took place */}
                 <Inputfield 
                     labelText="Numberplate of GreenMobility car"
                     id = "greenCarNumberplateInput"
@@ -35,8 +37,9 @@ export default function What() {
             {/* Driver information collection */}
             <div className="">
                 <YesNo 
-                    labelText="Was driver and renter of the GreenMobility car the same person?"
+                    labelText="Was driver and renter the same person?"
                     id="ShowDriverInfoForm"
+                    required={true}
                     onChange={setShowDriverInfoForm}
                 />
 
@@ -59,16 +62,12 @@ export default function What() {
             </div>
 
             {/* Accident location collection */}
-            <div className="w-full h-80 mb-14">
+            <div className="w-full h-80">
                 <LocationField 
                 id="accidentLocation"
-                labelText="Mark or write where the accident took place"
+                labelText="Mark where the accident took place"
                 onMoveCoords={setAccidentLocation}
                 />
-            </div>
-            <div className="flex flex-row w-full place-content-between h-10">
-                <button disabled={true} className="w-2/5 border-2 border-black text-black">Previous</button>
-                <button className="w-2/5 bg-MainGreen-300 text-white">Next</button>
             </div>
         </form>
     );

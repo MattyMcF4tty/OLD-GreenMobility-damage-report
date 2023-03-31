@@ -1,5 +1,5 @@
 import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 
 
 /* -----Text inputfield------------------------------------------------------------- */
@@ -7,7 +7,7 @@ interface InputfieldProps {
     id:string;
     labelText:string;
     required:boolean;
-    type: "number" | "text";
+    type: "number" | "text" | "email" | "tel";
     onChange: (isValue:string) => void;
 };
 
@@ -23,7 +23,7 @@ export function Inputfield(props: InputfieldProps) {
     return (
         <div className="flex flex-col mb-4">
             <label htmlFor={id}>{labelText}</label>
-            <input className="bg-MainGreen-100 h-10 text-lg p-1"
+            <input className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
                 id={id}
                 type={type} 
                 required={required}
@@ -60,7 +60,7 @@ export function TimeDateField(props: TimeDateProps) {
         <div className="flex flex-col mb-4">
             <label htmlFor={id}>{labelText}</label>
             <div id={id} className="flex flex-row">
-                <input className="bg-MainGreen-100 h-10 mr-5"
+                <input className="bg-MainGreen-100 h-10 mr-5 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
                     id={"Time" + id}
                     type="time"
                     value={time}
@@ -68,7 +68,7 @@ export function TimeDateField(props: TimeDateProps) {
                     onChange={(event) => setTime(event.target.value)}
                 />
 
-                <input className="bg-MainGreen-100 h-10"
+                <input className="bg-MainGreen-100 h-10 rounded-none w-32 border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
                     id={"Date" + id}
                     type="date" 
                     value={date}
@@ -85,14 +85,25 @@ export function TimeDateField(props: TimeDateProps) {
 interface YesNoProps {
     id:string;
     labelText:string;
+    required:boolean;
     onChange: (checked: boolean) => void;
 }
 
 export function YesNo(props: YesNoProps) {
-    const { id, labelText, onChange} = props;
+    const { id, labelText, required, onChange} = props;
 
     /* 0 is when the checkbox is first initialized and therefor is not filled, 1 is Yes, 2 is No */
     const [checked, setChecked] = useState< 0 | 1 | 2 >(0);
+    const [checkRequired, setCheckRequired] = useState<boolean>()
+
+    useEffect(() => {
+        if (required) {
+            setCheckRequired(true);
+        }
+        else {
+            setCheckRequired(false);
+        }
+    }, []);
 
     useEffect(() => {
         if (checked === 1) {
@@ -102,6 +113,9 @@ export function YesNo(props: YesNoProps) {
             onChange(false);
         };
 
+        if (checked > 0) {
+            setCheckRequired(false);
+        }
     }, [checked]);
 
 
@@ -111,20 +125,22 @@ export function YesNo(props: YesNoProps) {
 
             {/* Yes */}
             <div id={id} className="flex flex-row items-center">
-                <label htmlFor={"Yes"+id}>Yes</label>
-                <input className="accent-MainGreen-300"
+                <label htmlFor={"Yes"+id} className="mr-2">Yes</label>
+                <input className="accent-MainGreen-300 scale-125"
                     id={"Yes"+id}
                     type = "checkbox"
                     checked = {checked === 1}
+                    required={checkRequired}
                     onChange = {() => setChecked(1)}
                 />
 
                 {/* No  */}
-                <label htmlFor={"No"+id}>No</label>
-                <input className="accent-MainGreen-300"
+                <label htmlFor={"No"+id} className="ml-4 mr-2">No</label>
+                <input className="accent-MainGreen-300 scale-125"
                     id={"No"+id}
                     type = "checkbox"
                     checked = {checked === 2}
+                    required={checkRequired}
                     onChange = {() => setChecked(2)}
                 />
             </div>
@@ -172,7 +188,7 @@ export function LocationField(props: LocationFieldProps) {
     else {
         /* TODO: Maybe make it possible to enter address */
         return ( 
-            <div className="w-full h-full">
+            <div className="w-full h-full mb-6">
                 <label htmlFor={id}>{labelText}</label>
                 <div id={id} className="w-full h-full">
                     <GoogleMap
@@ -199,4 +215,82 @@ export function LocationField(props: LocationFieldProps) {
             </div>
         );
     };
+};
+
+
+/* ----- TextField ---------------------------------------------------- */
+interface TextFieldProps {
+    id:string;
+    maxLength:number;
+    labelText:string;
+    required:boolean;
+    onChange: (value: string) => void;
+}
+
+export function TextField(props: TextFieldProps) {
+    const {id, maxLength, labelText, required, onChange} = props;
+
+    const [text, setText] = useState<string>("");
+    const [currentLength, setCurrentLength] = useState<number>(0)
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        onChange(text);
+        setCurrentLength(text.length)
+    }, [text]);
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        };
+    }, [text]);
+
+    return (
+        <div className="flex flex-col mb-4">
+            <label htmlFor={id}>{labelText}</label>
+            <textarea 
+            ref={textareaRef}
+            id={id}
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            maxLength={maxLength}
+            required={required}
+            className="min-h-10 h-auto resize-none overflow-hidden outline-none focus:border-[3px] border-[1px] border-MainGreen-200 p-1 bg-MainGreen-100"
+            />
+            <p>{`${currentLength.toString()}/${maxLength.toString()}`}</p>
+        </div>
+    );
+};
+
+
+/* ----- ImageField ---------------------------------------------------- */
+interface ImageFieldProps {
+    id:string;
+    required:boolean;
+    labelText:string;
+};
+
+/* TODO: make picture upload to server when chosen, if a new picture is chosen the old picture need to get deleted */
+export function ImageField(props: ImageFieldProps) {
+    const {required, id, labelText} = props;
+
+    function handleImageUpload(event) {
+
+    }
+    
+    return (
+        <div className="flex flex-col mb-4">
+            <label htmlFor={id}>{labelText}</label>
+            <input className=""
+            id={id}
+            type="file" 
+            accept="image/*"
+            required={required}
+            capture="environment"
+            onChange={(event) => handleImageUpload(event.target.value)}
+            />
+        </div>
+    );
 };

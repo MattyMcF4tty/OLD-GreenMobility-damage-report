@@ -88,7 +88,6 @@ export default function DriverInfoForm(props: DriverInfoFormProps) {
                 onChange={setSocialSecurityNumber}
             />
 
-            {/* TODO: Check if its a real phone number */}
             <Inputfield
                 labelText = "Drivers driving license number"
                 id="DrivingLicenseNumberInput"
@@ -111,7 +110,7 @@ export default function DriverInfoForm(props: DriverInfoFormProps) {
                 labelText = "Drivers email"
                 id="FirstNameInput"
                 required={true}
-                type="text"
+                type="email"
                 onChange={setEmail}
             />
         </div>
