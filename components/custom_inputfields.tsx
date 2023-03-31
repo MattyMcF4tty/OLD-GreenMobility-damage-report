@@ -1,13 +1,12 @@
 import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
-import { time } from "console";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 
 /* -----Text inputfield------------------------------------------------------------- */
 interface InputfieldProps {
   id: string;
   labelText: string;
   required: boolean;
-  type: "number" | "text";
+  type: "number" | "text" | "email" | "tel";
   onChange: (isValue: string) => void;
 }
 
@@ -24,7 +23,7 @@ export function Inputfield(props: InputfieldProps) {
     <div className="flex flex-col mb-4">
       <label htmlFor={id}>{labelText}</label>
       <input
-        className="bg-MainGreen-100 h-10 text-lg p-1"
+        className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
         id={id}
         type={type}
         required={required}
@@ -40,8 +39,8 @@ interface TimeDateProps {
   id: string;
   labelText: string;
   required: boolean;
-  timeChange: (isValue: string) => void;
-  dateChange: (isValue: string) => void;
+  timeChange: (Value: string) => void;
+  dateChange: (Value: string) => void;
 }
 
 export function TimeDateField(props: TimeDateProps) {
@@ -60,7 +59,7 @@ export function TimeDateField(props: TimeDateProps) {
       <label htmlFor={id}>{labelText}</label>
       <div id={id} className="flex flex-row">
         <input
-          className="bg-MainGreen-100 h-10 mr-5"
+          className="bg-MainGreen-100 h-10 mr-5 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
           id={"Time" + id}
           type="time"
           value={time}
@@ -69,7 +68,7 @@ export function TimeDateField(props: TimeDateProps) {
         />
 
         <input
-          className="bg-MainGreen-100 h-10"
+          className="bg-MainGreen-100 h-10 rounded-none w-32 border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
           id={"Date" + id}
           type="date"
           value={date}
@@ -85,14 +84,24 @@ export function TimeDateField(props: TimeDateProps) {
 interface YesNoProps {
   id: string;
   labelText: string;
+  required: boolean;
   onChange: (checked: boolean) => void;
 }
 
 export function YesNo(props: YesNoProps) {
-  const { id, labelText, onChange } = props;
+  const { id, labelText, required, onChange } = props;
 
   /* 0 is when the checkbox is first initialized and therefor is not filled, 1 is Yes, 2 is No */
   const [checked, setChecked] = useState<0 | 1 | 2>(0);
+  const [checkRequired, setCheckRequired] = useState<boolean>();
+
+  useEffect(() => {
+    if (required) {
+      setCheckRequired(true);
+    } else {
+      setCheckRequired(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (checked === 1) {
@@ -100,29 +109,39 @@ export function YesNo(props: YesNoProps) {
     } else if (checked === 2) {
       onChange(false);
     }
+    if (checked > 0) {
+      setCheckRequired(false);
+    }
   }, [checked]);
 
   return (
-    <div className="flex flex-col mb-4 items-center">
+    <div className="flex flex-col mb-4">
       <label htmlFor={id}>{labelText}</label>
 
+      {/* Yes */}
       <div id={id} className="flex flex-row items-center">
-        <label htmlFor={"Yes" + id}>Yes</label>
+        <label htmlFor={"Yes" + id} className="mr-2">
+          Yes
+        </label>
         <input
-          className="accent-MainGreen-300 mr-5 "
+          className="accent-MainGreen-300 scale-125"
           id={"Yes" + id}
           type="checkbox"
           checked={checked === 1}
+          required={checkRequired}
           onChange={() => setChecked(1)}
         />
 
         {/* No  */}
-        <label htmlFor={"No" + id}>No</label>
+        <label htmlFor={"No" + id} className="ml-4 mr-2">
+          No
+        </label>
         <input
-          className="accent-MainGreen-300"
+          className="accent-MainGreen-300 scale-125"
           id={"No" + id}
           type="checkbox"
           checked={checked === 2}
+          required={checkRequired}
           onChange={() => setChecked(2)}
         />
       </div>
@@ -130,92 +149,151 @@ export function YesNo(props: YesNoProps) {
   );
 }
 
-/* -----Location inputfield---------------------------------------------------- */
+/* -----Location Inputfield---------------------------------------------------- */
 interface LocationFieldProps {
-  includeMap: boolean;
-  labelText: string;
   id: string;
+  labelText: string;
+  onMoveCoords: ({ lat, lng }: { lat: number; lng: number }) => void;
 }
 
 export function LocationField(props: LocationFieldProps) {
-  const { includeMap, labelText, id } = props;
-  const [accidentLocation, setAccidentLocation] = useState({
-    lat: 48.8684,
-    lng: 2.2945,
-  });
-  const [accidentAddress, setAccidentAddress] = useState<string>("");
+  const { id, labelText, onMoveCoords } = props;
 
-  //TODO: Make typeable and dragable google maps location integration
-  if (includeMap) {
+  const [markerCoords, setMarkerCoords] = useState<{
+    lat: number;
+    lng: number;
+  }>({ lat: 55.6843528344547, lng: 12.585598005943817 });
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  });
+
+  useEffect(() => {
+    onMoveCoords(markerCoords);
+  }, [markerCoords]);
+
+  if (loadError) {
     return (
-      <div className="flex flex-col mb-4">
+      <div>
         <label htmlFor={id}>{labelText}</label>
-        <input
-          className="bg-MainGreen-100"
-          value={accidentAddress}
-          onChange={(event) => setAccidentAddress(event.target.value)}
-        />
-        <Map id={id} setLocation={setAccidentLocation} />
+        <p id={id}>Error loading Google maps</p>
+      </div>
+    );
+  } else if (!isLoaded) {
+    return (
+      <div>
+        <label htmlFor={id}>{labelText}</label>
+        <p id={id}>Loading Google maps...</p>
+      </div>
+    );
+  } else {
+    /* TODO: Maybe make it possible to enter address */
+    return (
+      <div className="w-full h-full mb-6">
+        <label htmlFor={id}>{labelText}</label>
+        <div id={id} className="w-full h-full">
+          <GoogleMap
+            id={"map" + id}
+            center={markerCoords}
+            mapContainerStyle={{
+              height: "100%",
+              width: "100%",
+            }}
+            zoom={10}
+            options={{
+              fullscreenControl: false,
+              zoomControl: false,
+              streetViewControl: false,
+            }}
+          >
+            <Marker
+              position={markerCoords}
+              draggable={true}
+              onDragEnd={(event) =>
+                setMarkerCoords({
+                  lat: event.latLng.lat(),
+                  lng: event.latLng.lng(),
+                })
+              }
+            />
+          </GoogleMap>
+        </div>
       </div>
     );
   }
 }
 
-/* -----google maps inputfield---------------------------------------------------- */
-interface MapProps {
+/* ----- TextField ---------------------------------------------------- */
+interface TextFieldProps {
   id: string;
-  setLocation: (accidentLocation) => void;
-  markers: [Marker];
+  maxLength: number;
+  labelText: string;
+  required: boolean;
+  onChange: (value: string) => void;
 }
 
-export function Map(props: MapProps) {
-  const { id } = props;
-  const [accidentLocation, setAccidentLocation] = useState({
-    lat: 48.8684,
-    lng: 2.2945,
-  });
+export function TextField(props: TextFieldProps) {
+  const { id, maxLength, labelText, required, onChange } = props;
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-  });
+  const [text, setText] = useState<string>("");
+  const [currentLength, setCurrentLength] = useState<number>(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        const { latitude, longitude } = coords;
-        setAccidentLocation({ lat: latitude, lng: longitude });
-      });
+    onChange(text);
+    setCurrentLength(text.length);
+  }, [text]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
     }
-  }, []);
+  }, [text]);
 
-  if (!isLoaded) {
-    return <div>Google Maps Loading...</div>;
-  }
-
-  //TODO: Make typeable and dragable google maps location integration
-  if (isLoaded) {
-    return (
-      <GoogleMap
+  return (
+    <div className="flex flex-col mb-4">
+      <label htmlFor={id}>{labelText}</label>
+      <textarea
+        ref={textareaRef}
         id={id}
-        mapContainerStyle={{ width: "100%", height: "50vh" }}
-        center={accidentLocation}
-        zoom={15}
-        options={{
-          zoomControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: false,
-        }}
-      >
-        <Marker
-          position={accidentLocation}
-          draggable={true}
-          onDragEnd={(event) => {
-            const newPos = { lat: event.latLng.lat(), lng: event.latLng.lng() };
-            setAccidentLocation(newPos);
-          }}
-        />
-      </GoogleMap>
-    );
-  }
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        maxLength={maxLength}
+        required={required}
+        className="min-h-10 h-auto resize-none overflow-hidden outline-none focus:border-[3px] border-[1px] border-MainGreen-200 p-1 bg-MainGreen-100"
+      />
+      <p>{`${currentLength.toString()}/${maxLength.toString()}`}</p>
+    </div>
+  );
+}
+
+/* ----- ImageField ---------------------------------------------------- */
+interface ImageFieldProps {
+  id: string;
+  required: boolean;
+  labelText: string;
+}
+
+/* TODO: make picture upload to server when chosen, if a new picture is chosen the old picture need to get deleted */
+export function ImageField(props: ImageFieldProps) {
+  const { required, id, labelText } = props;
+
+  function handleImageUpload(event) {}
+
+  return (
+    <div className="flex flex-col mb-4">
+      <label htmlFor={id}>{labelText}</label>
+      <input
+        className=""
+        id={id}
+        type="file"
+        accept="image/*"
+        required={required}
+        capture="environment"
+        onChange={(event) => handleImageUpload(event.target.value)}
+      />
+    </div>
+  );
 }
