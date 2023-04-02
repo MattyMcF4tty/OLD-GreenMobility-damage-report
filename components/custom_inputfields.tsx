@@ -10,9 +10,7 @@ interface InputfieldProps {
   onChange: (isValue: string) => void;
 }
 
-export function Inputfield(props: InputfieldProps) {
-  const { id, labelText, required, type, onChange } = props;
-
+export const Inputfield = ({id, labelText, required, type, onChange}: InputfieldProps) => {
   const [isValue, setIsValue] = useState<string>("");
 
   useEffect(() => {
@@ -43,9 +41,7 @@ interface TimeDateProps {
   dateChange: (Value: string) => void;
 }
 
-export function TimeDateField(props: TimeDateProps) {
-  const { id, labelText, required, timeChange, dateChange } = props;
-
+export const TimeDateField = ({id, labelText, required, timeChange, dateChange}: TimeDateProps) => {
   const [time, setTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
@@ -88,9 +84,7 @@ interface YesNoProps {
   onChange: (checked: boolean) => void;
 }
 
-export function YesNo(props: YesNoProps) {
-  const { id, labelText, required, onChange } = props;
-
+export const YesNo = ({id, labelText, required, onChange}: YesNoProps) => {
   /* 0 is when the checkbox is first initialized and therefor is not filled, 1 is Yes, 2 is No */
   const [checked, setChecked] = useState<0 | 1 | 2>(0);
   const [checkRequired, setCheckRequired] = useState<boolean>();
@@ -156,14 +150,15 @@ interface LocationFieldProps {
   onMoveCoords: ({ lat, lng }: { lat: number; lng: number }) => void;
 }
 
-export function LocationField(props: LocationFieldProps) {
-  const { id, labelText, onMoveCoords } = props;
-
+export const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProps) => {
   const [markerCoords, setMarkerCoords] = useState<{
     lat: number;
     lng: number;
   }>({ lat: 55.6843528344547, lng: 12.585598005943817 });
 
+  /* TODO: Rewrite the way this gets the googleapikey, right people on the client side cna see it because we use
+           NEXT_PUBLIC_.
+  */
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   });
@@ -232,8 +227,7 @@ interface TextFieldProps {
   onChange: (value: string) => void;
 }
 
-export function TextField(props: TextFieldProps) {
-  const { id, maxLength, labelText, required, onChange } = props;
+export const TextField = ({ id, maxLength, labelText, required, onChange }: TextFieldProps) => {
 
   const [text, setText] = useState<string>("");
   const [currentLength, setCurrentLength] = useState<number>(0);
@@ -269,6 +263,7 @@ export function TextField(props: TextFieldProps) {
   );
 }
 
+
 /* ----- ImageField ---------------------------------------------------- */
 interface ImageFieldProps {
   id: string;
@@ -277,10 +272,10 @@ interface ImageFieldProps {
 }
 
 /* TODO: make picture upload to server when chosen, if a new picture is chosen the old picture need to get deleted */
-export function ImageField(props: ImageFieldProps) {
-  const { required, id, labelText } = props;
-
-  function handleImageUpload(event) {}
+export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
+  function handleImageUpload(event) {
+    /* Upload picture to server */
+  }
 
   return (
     <div className="flex flex-col mb-4">

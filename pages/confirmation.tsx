@@ -1,14 +1,22 @@
 import React, {useEffect, useState} from "react";
-import { driverInformation } from "../components/OldComponents/driver_info_form";
+import { NextPage } from "next";
+import { DriverInformation } from "../logic/logic";
 
-function confirmationPage () {
-    const [driverInfo, setDriverInfo] = useState<driverInformation | null>(null);
+
+const confirmationPage:NextPage = () => {
+    const [driverInfo, setDriverInfo] = useState<DriverInformation>();
 
     useEffect(() => {
-      const driverInfoString = localStorage.getItem('LocalDriverInformation');
+      const driverInfoString = sessionStorage.getItem('driverInfo');
+
       if (driverInfoString) {
-        setDriverInfo(JSON.parse(driverInfoString));
+        setDriverInfo(JSON.parse(driverInfoString))
       }
+      else {console.error("driverInfo not found in sessionStorage")}
+
+      /* I will do this for all my keys */
+
+
     }, []);
 
 

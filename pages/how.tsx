@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Inputfield, ImageField, YesNo } from "../components/custom_inputfields";
-import WitnessList from "../components/howPage/witness_collection";
+import { AccidentInformation } from "../logic/logic";
+import { WitnessList } from "../components/howPage/witness_collection";
 
 export default function HowPage () {
-
     const [accidentDescription, setAccidentDescription] = useState<string>("");
     const [greenDriverSpeed, setGreenDriverSpeed] = useState<string>("");
     const [damageDescription, setDamageDescription] = useState<string>("");
@@ -11,6 +11,31 @@ export default function HowPage () {
     const [policeReport, setPoliceReport] = useState<boolean>(false);
     const [journalNumber, setJournalNumber] = useState<string>();
     const [witnessesPresent, setWitnessesPresent] = useState<boolean>(false);
+
+    const [accidentInfo, setAccidentInfo] = useState<AccidentInformation>();
+
+    /* Getting data stored in sessionStorage */
+    useEffect(() => {
+        setAccidentInfo(JSON.parse(sessionStorage.getItem('accidentInfo')));
+        console.log(accidentInfo)
+    }, []);
+
+    /* Updating the values in accidenInfo */
+    useEffect(() => {
+        const updateAccidentInfo = new AccidentInformation();
+
+        updateAccidentInfo.crashDescription = accidentDescription;
+        updateAccidentInfo.damageDescription = damageDescription;
+        updateAccidentInfo.speed = greenDriverSpeed;
+
+        setAccidentInfo(updateAccidentInfo);
+    }, [accidentDescription, greenDriverSpeed, damageDescription]);
+
+    /* Updating sessionStorage with the new values */
+    useEffect(() => {
+        sessionStorage.setItem('accidentInfo', JSON.stringify(accidentInfo));
+    }, [accidentInfo]);
+
 
     return (
         <form>
@@ -116,11 +141,6 @@ export default function HowPage () {
                 {witnessesPresent &&
                     <div>
                         <WitnessList />
-                        {/* user should be able to create a new witness for every witness
-                        You will need to create a class called witness and for every witness create a 
-                        new witness class. This should be as simple as possible for user and shouldnt fill too
-                        much of the screen
-                        */}
                     </div>
                 }
             </div>

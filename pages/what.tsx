@@ -1,24 +1,38 @@
 import React, {useEffect, useState} from "react";
 import {Inputfield, TimeDateField, YesNo, LocationField} from "../components/custom_inputfields";
 import { NavButtons } from "../components/navigation";
-import DriverInfoForm, {driverInformation} from "../components/whatPage/driver_information_form";
+import DriverInfoForm from "../components/whatPage/driver_information_form";
+import { NextPage } from "next";
+import { AccidentInformation, DriverInformation } from "../logic/logic";
 
-export default function What() {
+
+
+const What: NextPage = () => {
     const [greenCarNumberplate, setgreenCarNumberplate] = useState<string>("");
     const [showDriverInfoForm, setShowDriverInfoForm] = useState<boolean>(false);
     const [accidentTime, setAccidentTime] = useState<string>("");
     const [accidentDate, setAccidentDate] = useState<string>("");
     const [accidentLocation, setAccidentLocation] = useState<{ lat: number; lng: number }>();
-
-
-    const [driverInfo, setDriverInfo] = useState<driverInformation>()
+    
+    /* Defining the classes that the information will be keept in */
+    const [driverInfo, setDriverInfo] = useState<DriverInformation>()
+    const [accidentInfo, setAccidentInfo] = useState<AccidentInformation>();
 
     useEffect(() => {
-        sessionStorage.setItem("greenCarNumberplate", greenCarNumberplate)
-        sessionStorage.setItem("accidentTime", accidentTime)
-        sessionStorage.setItem("accidentDate", accidentDate)
-        sessionStorage.setItem("accidentLocation", JSON.stringify(accidentLocation))
-    }, [greenCarNumberplate, driverInfo, accidentLocation, accidentTime, accidentDate]);
+        const newAccidentInfo = new AccidentInformation();
+        newAccidentInfo.location = accidentLocation;
+        newAccidentInfo.greenCarNumberPlate = greenCarNumberplate;
+        newAccidentInfo.time = accidentTime;
+        newAccidentInfo.date = accidentDate;
+        
+        setAccidentInfo(newAccidentInfo);
+      }, [greenCarNumberplate, accidentLocation, accidentTime, accidentDate]);
+
+    useEffect(() => {
+        sessionStorage.setItem("driverInfo", JSON.stringify(driverInfo));
+        sessionStorage.setItem("accidentInfo", JSON.stringify(accidentInfo));
+        console.log(accidentInfo);
+    }, [driverInfo, accidentInfo]);
     
     return (
         <form className="w-full">
@@ -45,7 +59,7 @@ export default function What() {
 
                 {showDriverInfoForm &&
                     <DriverInfoForm 
-                        onchange={setDriverInfo}
+                        onChange={setDriverInfo}
                     />
                 }
             </div>
@@ -72,3 +86,5 @@ export default function What() {
         </form>
     );
 };
+
+export default What;

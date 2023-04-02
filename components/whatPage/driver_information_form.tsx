@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Inputfield } from "../custom_inputfields";
-
-export class driverInformation{
-    firstName:string;
-    lastName:string;
-    address:string;
-    socialSecurityNumber:string;
-    drivingLicenseNumber:string;
-    phoneNumber:string;
-    email:string;
-}
+import { DriverInformation } from "../../logic/logic";
 
 interface DriverInfoFormProps {
-    onchange: (driverInfo: driverInformation) => void;
+    onChange: (driverInfo: DriverInformation) => void;
 }
 
-export default function DriverInfoForm(props: DriverInfoFormProps) {
-    const { onchange } = props;
+const DriverInfoForm = ({ onChange}: DriverInfoFormProps) => {
     const [firstName, setFirstName] = useState<string>();
     const [lastName, setLastName] = useState<string>();
     const [address, setAddress] = useState<string>();
@@ -25,10 +15,10 @@ export default function DriverInfoForm(props: DriverInfoFormProps) {
     const [phoneNumber, setPhoneNumber] = useState<string>();
     const [email, setEmail] = useState<string>();
 
-    const [driverInfo, setDriverInfo] = useState<driverInformation>()
+    const [driverInfo, setDriverInfo] = useState<DriverInformation>()
 
     useEffect(() => {
-        const newDriverInfo = new driverInformation();
+        const newDriverInfo = new DriverInformation();
         newDriverInfo.firstName = firstName;
         newDriverInfo.lastName = lastName;
         newDriverInfo.address = address;
@@ -49,8 +39,8 @@ export default function DriverInfoForm(props: DriverInfoFormProps) {
       ]);
     
       useEffect(() => {
-        onchange(driverInfo);
-      }, [driverInfo, onchange]);
+        onChange(driverInfo);
+      }, [driverInfo, onChange]);
 
     return (
         <div className="flex flex-col">
@@ -116,3 +106,5 @@ export default function DriverInfoForm(props: DriverInfoFormProps) {
         </div>
     );
 ;}
+
+export default DriverInfoForm;
