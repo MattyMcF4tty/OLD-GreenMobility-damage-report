@@ -21,11 +21,10 @@ export default function Checkbox(props: CheckboxProps) {
   }, [checked]);
 
   return (
-    <div className="flex flex-row-reverse items-center mr-5">
-      {/* Yes */}
+    <div className="flex flex-row-reverse items-center mr-4">
       <label htmlFor={"Checkbox" + id}>{labelText}</label>
       <input
-        className="accent-MainGreen-300 items-center"
+        className="accent-MainGreen-300 items-center mr-1 scale-125"
         id={"Checkbox" + id}
         type="checkbox"
         checked={checked}

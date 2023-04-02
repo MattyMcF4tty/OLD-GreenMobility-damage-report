@@ -40,17 +40,19 @@ function PhoneNumber() {
   };
 
   return (
-    /* TODO: gøre så man ikke kan skrive længere end hvad ens nr er */
+    /* TODO: style input boxen */
     <div>
-      <PhoneInput
-        limitMaxLength
-        placeholder="Indtast tlf. nr."
-        value={phoneNumber}
-        onChange={handlePhoneNumberChange}
-        onCountryChange={setCountry}
-        country={country}
-      />
-      <p>Dit nr. {formatPhoneNumberIntl(phoneNumber)}</p>
+      <p>Drivers phone number</p>
+      <div className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none mb-4">
+        <PhoneInput
+          limitMaxLength
+          placeholder="Indtast tlf. nr."
+          value={phoneNumber}
+          onChange={handlePhoneNumberChange}
+          onCountryChange={setCountry}
+          country={country}
+        />
+      </div>
     </div>
   );
 }

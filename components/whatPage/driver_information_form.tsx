@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Inputfield } from "../custom_inputfields";
+import PhoneNumber from "../opposite_information/phone_form";
+
+export class driverInformation {
+  firstName: string;
+  lastName: string;
+  address: string;
+  socialSecurityNumber: string;
+  drivingLicenseNumber: string;
+  phoneNumber: string;
+  email: string;
+}
 import { DriverInformation } from "../../logic/logic";
 
 interface DriverInfoFormProps {
@@ -42,58 +53,53 @@ const DriverInfoForm = ({ onChange}: DriverInfoFormProps) => {
         onChange(driverInfo);
       }, [driverInfo, onChange]);
 
-    return (
-        <div className="flex flex-col">
-            <Inputfield
-                labelText = "Drivers first name"
-                id="FirstNameInput"
-                required={true}
-                type="text"
-                onChange={setFirstName}
-            />
+  return (
+    <div className="flex flex-col">
+      <Inputfield
+        labelText="Drivers first name"
+        id="FirstNameInput"
+        required={true}
+        type="text"
+        onChange={setFirstName}
+      />
 
-            <Inputfield
-                labelText = "Drivers last name"
-                id="LastNameInput"
-                required={true}
-                type="text"
-                onChange={setLastName}
-            />
+      <Inputfield
+        labelText="Drivers last name"
+        id="LastNameInput"
+        required={true}
+        type="text"
+        onChange={setLastName}
+      />
 
-            {/* TODO: make google autofill */}
-            <Inputfield
-                labelText = "Drivers address"
-                id="AddressInput"
-                required={true}
-                type="text"
-                onChange={setAddress}
-            />
+      {/* TODO: make google autofill */}
+      <Inputfield
+        labelText="Drivers address"
+        id="AddressInput"
+        required={true}
+        type="text"
+        onChange={setAddress}
+      />
 
-            {/* TODO: Check if its a real phone number */}
-            <Inputfield
-                labelText = "Drivers social security number"
-                id="SocialSecurityNumberInput"
-                required={true}
-                type="number"
-                onChange={setSocialSecurityNumber}
-            />
+      {/* TODO: Check if its a real phone number */}
+      <Inputfield
+        labelText="Drivers social security number"
+        id="SocialSecurityNumberInput"
+        required={true}
+        type="number"
+        onChange={setSocialSecurityNumber}
+      />
 
-            <Inputfield
-                labelText = "Drivers driving license number"
-                id="DrivingLicenseNumberInput"
-                required={true}
-                type="number"
-                onChange={setDrivingLicenseNumber}
-            />
+      <Inputfield
+        labelText="Drivers driving license number"
+        id="DrivingLicenseNumberInput"
+        required={true}
+        type="number"
+        onChange={setDrivingLicenseNumber}
+      />
 
-            {/* TODO: Check if its a real phone number */}
-            <Inputfield
-                labelText = "Drivers phone number"
-                id="PhoneNumberInput"
-                required={true}
-                type="number"
-                onChange={setPhoneNumber}
-            />
+      {/* TODO: Check if its a real phone number */}
+
+      <PhoneNumber />
 
             {/* TODO: Check if its a real email */}
             <Inputfield
