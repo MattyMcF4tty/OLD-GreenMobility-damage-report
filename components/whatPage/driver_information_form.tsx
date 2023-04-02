@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Inputfield } from "../custom_inputfields";
+import { AddressField, Inputfield } from "../custom_inputfields";
 import PhoneNumber from "../opposite_information/phone_form";
 
 export class driverInformation {
@@ -72,11 +72,10 @@ const DriverInfoForm = ({ onChange}: DriverInfoFormProps) => {
       />
 
       {/* TODO: make google autofill */}
-      <Inputfield
-        labelText="Drivers address"
+      <AddressField 
         id="AddressInput"
+        labelText="Drivers addres"
         required={true}
-        type="text"
         onChange={setAddress}
       />
 
@@ -98,19 +97,18 @@ const DriverInfoForm = ({ onChange}: DriverInfoFormProps) => {
       />
 
       {/* TODO: Check if its a real phone number */}
-
       <PhoneNumber />
 
-            {/* TODO: Check if its a real email */}
-            <Inputfield
-                labelText = "Drivers email"
-                id="FirstNameInput"
-                required={true}
-                type="email"
-                onChange={setEmail}
-            />
-        </div>
-    );
+      {/* TODO: Check if its a real email */}
+      <Inputfield
+        labelText = "Drivers email"
+        id="FirstNameInput"
+        required={true}
+        type="email"
+        onChange={setEmail}
+      />
+    </div>
+  );
 ;}
 
 export default DriverInfoForm;

@@ -57,7 +57,7 @@ const What: NextPage = () => {
                     onChange={setShowDriverInfoForm}
                 />
 
-                {showDriverInfoForm &&
+                {!showDriverInfoForm &&
                     <DriverInfoForm 
                         onChange={setDriverInfo}
                     />

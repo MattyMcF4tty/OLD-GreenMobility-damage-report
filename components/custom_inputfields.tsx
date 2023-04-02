@@ -1,5 +1,7 @@
-import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
-import React, { useEffect, useState, useRef, use } from "react";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import React, { useEffect, useState, useRef } from "react";
+import { loadGoogleMaps } from "../logic/logic";
+import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 
 /* -----Text inputfield------------------------------------------------------------- */
 interface InputfieldProps {
@@ -154,14 +156,12 @@ export const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProp
   const [markerCoords, setMarkerCoords] = useState<{
     lat: number;
     lng: number;
-  }>({ lat: 55.6843528344547, lng: 12.585598005943817 });
+  }>({ lat: 0, lng: 0 });
 
   /* TODO: Rewrite the way this gets the googleapikey, right people on the client side cna see it because we use
            NEXT_PUBLIC_.
   */
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-  });
+  const { isLoaded, loadError } = loadGoogleMaps();
 
   useEffect(() => {
     onMoveCoords(markerCoords);
@@ -182,7 +182,6 @@ export const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProp
       </div>
     );
   } else {
-    /* TODO: Maybe make it possible to enter address */
     return (
       <div className="w-full h-full mb-6">
         <label htmlFor={id}>{labelText}</label>
@@ -194,7 +193,7 @@ export const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProp
               height: "100%",
               width: "100%",
             }}
-            zoom={10}
+            zoom={5}
             options={{
               fullscreenControl: false,
               zoomControl: false,
@@ -292,3 +291,100 @@ export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
     </div>
   );
 }
+
+
+/* ----- Google maps autofill field ---------------------------------------------------- */
+interface AddressFieldProps {
+  id: string;
+  labelText: string;
+  required: boolean;
+  onChange: (address: string) => void;
+}
+
+export const AddressField= ({ id, labelText, required, onChange }: AddressFieldProps) => {
+  const { isLoaded, loadError } = loadGoogleMaps();
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
+
+  const handleSelect = async (description: string) => {
+    setValue(description, false);
+    clearSuggestions();
+
+    try {
+      const results = await getGeocode({ address: description });
+    } 
+    catch (error) {
+      console.log("Error: ", error);
+    }
+
+    onChange(description);
+  };
+
+
+  if ( isLoaded ) {
+    return (
+      <div className="flex flex-col mb-4">
+        <label htmlFor={id}>{labelText}</label>
+        <input
+          className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
+          id={id}
+          type="text"
+          required={required}
+          value={value}
+          onChange={handleInput}
+          disabled={!ready}
+        />
+        {status === "OK" && (
+          <ul>
+            {data.map(({ id, description }) => (
+              <li key={id} onClick={() => handleSelect(description)}>
+                {description}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+  else if ( loadError ) {
+    <div>
+      <p>Google maps failed to load</p>
+    </div>
+  }
+  else if ( !isLoaded ) {
+    <div>
+      <p>Loading google maps...</p>
+    </div>
+  }
+
+};
+
+
+/* ----- Google maps field ---------------------------------------------------- */
+interface AddressFieldProps {
+    id: string;
+    labelText: string;
+    required: boolean;
+    onChange: (address: string) => void;
+}
+
+interface LocationField {
+  id: string;
+  labelText: string;
+  onMoveCoords: ({ lat, lng }: { lat: number; lng: number }) => void;
+}
+
+/* TODO: Fix the google maps integration, so the fields load probably, all google maps inputfields 
+should be inside this GoogleMapsField. Maybe make new file called google_maps_fields */
+export const GoogleMapsField = ({}) => {
+
+};
