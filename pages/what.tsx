@@ -3,7 +3,6 @@ import {
   Inputfield,
   TimeDateField,
   YesNo,
-  LocationField,
 } from "../components/custom_inputfields";
 import { NavButtons } from "../components/navigation";
 import DriverInfoForm from "../components/whatPage/driver_information_form";
