@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Inputfield, TimeDateField, YesNo, LocationField} from "../components/custom_inputfields";
+import {Inputfield, TimeDateField, YesNo} from "../components/custom_inputfields";
 import { NavButtons } from "../components/navigation";
 import DriverInfoForm from "../components/whatPage/driver_information_form";
 import { NextPage } from "next";
@@ -76,13 +76,13 @@ const What: NextPage = () => {
             </div>
 
             {/* Accident location collection */}
-            <div className="w-full h-80">
+{/*             <div className="w-full h-80">
                 <LocationField 
                 id="accidentLocation"
                 labelText="Mark where the accident took place"
                 onMoveCoords={setAccidentLocation}
                 />
-            </div>
+            </div> */}
         </form>
     );
 };
