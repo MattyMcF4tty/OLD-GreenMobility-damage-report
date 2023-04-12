@@ -1,5 +1,5 @@
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import React, { useEffect, useState, useRef } from "react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import React, { useEffect, useState, useRef, use } from "react";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 
 /* -----Text inputfield------------------------------------------------------------- */
@@ -222,6 +222,50 @@ export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
 
 
 /* ----- Google maps autofill field ---------------------------------------------------- */
+interface LocationFieldProps {
+
+}
+
+export const LocationField = ({}: LocationFieldProps) => {
+  const [location, setLocation] = useState<{lat:number, lng:number}>({lat: 0, lng: 0});
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    libraries: ["places"],
+  });
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+      })
+    }
+    else {
+      const country = JSON.parse(sessionStorage.getItem("country"))
+      if (country != null) {
+        setLocation(country.location)
+      }
+    }
+
+  }, [])
+
+  return ( 
+    <GoogleMap
+    center={location}
+    zoom={5}
+    mapContainerStyle={{
+      height: "100%",
+      width: "100%",
+    }}
+    >
+
+    </GoogleMap>
+  )
+}
 /* interface AddressFieldProps {
   id: string;
   labelText: string;

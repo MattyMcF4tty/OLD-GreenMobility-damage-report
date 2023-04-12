@@ -73,9 +73,6 @@ const DriverInfoForm = ({ onChange}: DriverInfoFormProps) => {
       />
 
       {/* TODO: make google autofill */}
-{/*       <GoogleMapsField 
-        type="address"
-      /> */}
 
       {/* TODO: Check if its a real phone number */}
       <Inputfield
