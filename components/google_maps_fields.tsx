@@ -49,8 +49,8 @@ const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProps) => {
       lng: number;
     }>({ lat: 0, lng: 0 });
   
-    /* TODO: Rewrite the way this gets the googleapikey, right people on the client side cna see it because we use
-             NEXT_PUBLIC_.
+    /* TODO: Rewrite the way this gets the googleapikey. People on the client side can see it because we use
+             NEXT_PUBLIC_
     */
     const { isLoaded, loadError } = loadGoogleMaps();
   
