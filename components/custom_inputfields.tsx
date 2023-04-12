@@ -1,6 +1,5 @@
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import React, { useEffect, useState, useRef } from "react";
-import { loadGoogleMaps } from "../logic/logic";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 
 /* -----Text inputfield------------------------------------------------------------- */
@@ -145,77 +144,6 @@ export const YesNo = ({id, labelText, required, onChange}: YesNoProps) => {
   );
 }
 
-/* -----Location Inputfield---------------------------------------------------- */
-interface LocationFieldProps {
-  id: string;
-  labelText: string;
-  onMoveCoords: ({ lat, lng }: { lat: number; lng: number }) => void;
-}
-
-export const LocationField = ({ id, labelText, onMoveCoords }: LocationFieldProps) => {
-  const [markerCoords, setMarkerCoords] = useState<{
-    lat: number;
-    lng: number;
-  }>({ lat: 0, lng: 0 });
-
-  /* TODO: Rewrite the way this gets the googleapikey, right people on the client side cna see it because we use
-           NEXT_PUBLIC_.
-  */
-  const { isLoaded, loadError } = loadGoogleMaps();
-
-  useEffect(() => {
-    onMoveCoords(markerCoords);
-  }, [markerCoords]);
-
-  if (loadError) {
-    return (
-      <div>
-        <label htmlFor={id}>{labelText}</label>
-        <p id={id}>Error loading Google maps</p>
-      </div>
-    );
-  } else if (!isLoaded) {
-    return (
-      <div>
-        <label htmlFor={id}>{labelText}</label>
-        <p id={id}>Loading Google maps...</p>
-      </div>
-    );
-  } else {
-    return (
-      <div className="w-full h-full mb-6">
-        <label htmlFor={id}>{labelText}</label>
-        <div id={id} className="w-full h-full">
-          <GoogleMap
-            id={"map" + id}
-            center={markerCoords}
-            mapContainerStyle={{
-              height: "100%",
-              width: "100%",
-            }}
-            zoom={5}
-            options={{
-              fullscreenControl: false,
-              zoomControl: false,
-              streetViewControl: false,
-            }}
-          >
-            <Marker
-              position={markerCoords}
-              draggable={true}
-              onDragEnd={(event) =>
-                setMarkerCoords({
-                  lat: event.latLng.lat(),
-                  lng: event.latLng.lng(),
-                })
-              }
-            />
-          </GoogleMap>
-        </div>
-      </div>
-    );
-  }
-}
 
 /* ----- TextField ---------------------------------------------------- */
 interface TextFieldProps {
@@ -294,7 +222,7 @@ export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
 
 
 /* ----- Google maps autofill field ---------------------------------------------------- */
-interface AddressFieldProps {
+/* interface AddressFieldProps {
   id: string;
   labelText: string;
   required: boolean;
@@ -368,23 +296,6 @@ export const AddressField= ({ id, labelText, required, onChange }: AddressFieldP
 
 };
 
-
-/* ----- Google maps field ---------------------------------------------------- */
-interface AddressFieldProps {
-    id: string;
-    labelText: string;
-    required: boolean;
-    onChange: (address: string) => void;
-}
-
-interface LocationField {
-  id: string;
-  labelText: string;
-  onMoveCoords: ({ lat, lng }: { lat: number; lng: number }) => void;
-}
-
-/* TODO: Fix the google maps integration, so the fields load probably, all google maps inputfields 
+TODO: Fix the google maps integration, so the fields load probably, all google maps inputfields 
 should be inside this GoogleMapsField. Maybe make new file called google_maps_fields */
-export const GoogleMapsField = ({}) => {
 
-};
