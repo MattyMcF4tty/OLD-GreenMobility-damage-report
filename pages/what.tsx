@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Inputfield,
-  TimeDateField,
-  YesNo,
-} from "../components/custom_inputfields";
+import { Inputfield, TimeDateField, YesNo } from "../components/custom_inputfields";
 import { NavButtons } from "../components/navigation";
 import DriverInfoForm from "../components/whatPage/driver_information_form";
 import { NextPage } from "next";
