@@ -11,8 +11,8 @@ const What: NextPage = () => {
   const [accidentTime, setAccidentTime] = useState<string>("");
   const [accidentDate, setAccidentDate] = useState<string>("");
   const [accidentLocation, setAccidentLocation] = useState<{
-    lat: number;
-    lng: number;
+    address: string, 
+    position: {lat: number, lng: number}
   }>();
 
   /* Defining the classes that the information will be keept in */
@@ -74,7 +74,9 @@ const What: NextPage = () => {
 
       {/* Accident location collection */}
       <div className="w-full h-80">
-        <LocationField />
+        <LocationField 
+        setLocation={setAccidentLocation}
+        />
       </div>
     </form>
   );

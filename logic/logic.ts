@@ -13,7 +13,7 @@ export class DriverInformation {
 
 /* Accident Information Class: The class with all the information we need about the accident */
 export class AccidentInformation {
-    location: {lat: number, lng: number};
+    location: {address:string, position:{lat: number, lng: number}};
     greenCarNumberPlate: string;
     time: string;
     date: string;

@@ -1,4 +1,5 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { Address } from "cluster";
 import React, { useEffect, useState, useRef, use } from "react";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 
@@ -221,13 +222,14 @@ export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
 }
 
 
-/* ----- Google maps autofill field ---------------------------------------------------- */
+/* ----- Location field ---------------------------------------------------- */
 interface LocationFieldProps {
-
+  setLocation: (location: { address: string; position: { lat: number; lng: number } }) => void;
 }
 
-export const LocationField = ({}: LocationFieldProps) => {
-  const [location, setLocation] = useState<{lat:number, lng:number}>({lat: 0, lng: 0});
+export const LocationField = ({ setLocation }: LocationFieldProps) => {
+  const [position, setPosition] = useState<{lat:number, lng:number}>({lat: 0, lng: 0});
+  const [address, setAddress] = useState<string>("")
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -235,10 +237,32 @@ export const LocationField = ({}: LocationFieldProps) => {
   });
 
   useEffect(() => {
+    setLocation({address, position})
+  }, [position, address]);
+
+  useEffect(() => {
+    (async () => {
+      if (address) {
+        const results = await getGeocode({ address });
+        const newPosition = await getLatLng(results[0]);
+        setPosition(newPosition);
+      }
+    })();
+  }, [address]);
+
+  useEffect(() => {
+    (async () => {
+      const results = await getGeocode({ location: position });
+      setAddress(results[0].formatted_address);
+    })();
+  }, [position]);
+
+
+  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLocation({
+          setPosition({
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           });
@@ -247,24 +271,55 @@ export const LocationField = ({}: LocationFieldProps) => {
     else {
       const country = JSON.parse(sessionStorage.getItem("country"))
       if (country != null) {
-        setLocation(country.location)
+        setPosition(country.location)
       }
     }
 
   }, [])
 
-  return ( 
-    <GoogleMap
-    center={location}
-    zoom={5}
-    mapContainerStyle={{
-      height: "100%",
-      width: "100%",
-    }}
-    >
-
-    </GoogleMap>
+  if (loadError) {
+    <div>
+      <p>Error loading google maps</p>
+    </div>
+  }
+  else if (isLoaded) {
+    return ( 
+      <div>
+        <Inputfield 
+        id="addressInput"
+        labelText="Enter address of accident or drag the marker on Google maps"
+        required={true}
+        type="text"
+        onChange={setAddress}
+        />
+        <GoogleMap
+        center={position}
+        zoom={5}
+        mapContainerStyle={{
+          height: "100%",
+          width: "100%",
+        }}
+        options={{
+          fullscreenControl: false,
+          streetViewControl: false,
+          zoomControl: false,
+        }}
+        >
+          <Marker 
+          position={position}
+          draggable={true}
+          onDragEnd={(event) => setPosition({lat: event.latLng.lat(), lng: event.latLng.lng()})}
+          />
+        </GoogleMap>
+      </div>
+    )
+  }
+  else (
+    <div>
+      <p>Loading Google Maps...</p>
+    </div>
   )
+
 }
 /* interface AddressFieldProps {
   id: string;
