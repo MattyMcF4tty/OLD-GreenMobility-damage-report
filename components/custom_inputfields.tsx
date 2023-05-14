@@ -278,9 +278,11 @@ export const LocationField = ({ setLocation }: LocationFieldProps) => {
   }, [])
 
   if (loadError) {
-    <div>
-      <p>Error loading google maps</p>
-    </div>
+    return (
+      <div>
+        <p>Error loading google maps</p>
+      </div>
+    )
   }
   else if (isLoaded) {
     return ( 
@@ -314,87 +316,11 @@ export const LocationField = ({ setLocation }: LocationFieldProps) => {
       </div>
     )
   }
-  else (
-    <div>
-      <p>Loading Google Maps...</p>
-    </div>
-  )
-
-}
-/* interface AddressFieldProps {
-  id: string;
-  labelText: string;
-  required: boolean;
-  onChange: (address: string) => void;
-}
-
-export const AddressField= ({ id, labelText, required, onChange }: AddressFieldProps) => {
-  const { isLoaded, loadError } = loadGoogleMaps();
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete();
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
-
-  const handleSelect = async (description: string) => {
-    setValue(description, false);
-    clearSuggestions();
-
-    try {
-      const results = await getGeocode({ address: description });
-    } 
-    catch (error) {
-      console.log("Error: ", error);
-    }
-
-    onChange(description);
-  };
-
-
-  if ( isLoaded ) {
+  else {
     return (
-      <div className="flex flex-col mb-4">
-        <label htmlFor={id}>{labelText}</label>
-        <input
-          className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
-          id={id}
-          type="text"
-          required={required}
-          value={value}
-          onChange={handleInput}
-          disabled={!ready}
-        />
-        {status === "OK" && (
-          <ul>
-            {data.map(({ id, description }) => (
-              <li key={id} onClick={() => handleSelect(description)}>
-                {description}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div>
+        <p>Loading Google Maps...</p>
       </div>
-    );
+    )
   }
-  else if ( loadError ) {
-    <div>
-      <p>Google maps failed to load</p>
-    </div>
-  }
-  else if ( !isLoaded ) {
-    <div>
-      <p>Loading google maps...</p>
-    </div>
-  }
-
-};
-
-TODO: Fix the google maps integration, so the fields load probably, all google maps inputfields 
-should be inside this GoogleMapsField. Maybe make new file called google_maps_fields */
-
+}
