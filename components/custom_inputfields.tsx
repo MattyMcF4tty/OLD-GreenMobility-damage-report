@@ -264,7 +264,7 @@ export const LocationField = ({}: LocationFieldProps) => {
         <Marker position={{ lat: 0, lng: 0 }} draggable={true} />
       </GoogleMap>
     );
-  else½
+  else
     return (
       <div>
         <p>loding maps</p>
@@ -310,28 +310,10 @@ export const AddressField= ({ id, labelText, required, onChange }: AddressFieldP
 
   if ( isLoaded ) {
     return (
-      <div className="flex flex-col mb-4">
-        <label htmlFor={id}>{labelText}</label>
-        <input
-          className="bg-MainGreen-100 h-10 text-lg p-1 rounded-none border-[1px] focus:border-[3px] border-MainGreen-200 outline-none"
-          id={id}
-          type="text"
-          required={required}
-          value={value}
-          onChange={handleInput}
-          disabled={!ready}
-        />
-        {status === "OK" && (
-          <ul>
-            {data.map(({ id, description }) => (
-              <li key={id} onClick={() => handleSelect(description)}>
-                {description}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div>
+        <p>Loading Google Maps...</p>
       </div>
-    );
+    )
   }
   else if ( loadError ) {
     <div>
