@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import Bike from "../components/opposite_information/bike_information_form";
-import Text from "../components/textarea";
 import Person, {
   PedestrianInformation,
 } from "../components/opposite_information/person_information_form";

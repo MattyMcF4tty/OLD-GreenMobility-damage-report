@@ -1,6 +1,5 @@
 import { kMaxLength } from "buffer";
 import React, { useState, useRef, useEffect } from "react";
-import Text from "../textarea";
 import { info } from "console";
 import { TextField } from "../custom_inputfields";
 

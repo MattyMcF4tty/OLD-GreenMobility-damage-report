@@ -16,7 +16,7 @@ interface bikeInfoFormProps {
   onchange: (carInfo: bikeInformation) => void;
 }
 
-export default function CarInfoForm(props: bikeInfoFormProps) {
+export default function BikeInfoForm(props: bikeInfoFormProps) {
   const { onchange } = props;
   const [fullName, setFullName] = useState<string>();
   const [phoneNumber, setPhoneNumber] = useState<number>();

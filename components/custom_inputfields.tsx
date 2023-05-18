@@ -1,7 +1,10 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { Address } from "cluster";
 import React, { useEffect, useState, useRef, use } from "react";
-import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
 
 /* -----Text inputfield------------------------------------------------------------- */
 interface InputfieldProps {
@@ -12,7 +15,13 @@ interface InputfieldProps {
   onChange: (isValue: string) => void;
 }
 
-export const Inputfield = ({id, labelText, required, type, onChange}: InputfieldProps) => {
+export const Inputfield = ({
+  id,
+  labelText,
+  required,
+  type,
+  onChange,
+}: InputfieldProps) => {
   const [isValue, setIsValue] = useState<string>("");
 
   useEffect(() => {
@@ -32,7 +41,7 @@ export const Inputfield = ({id, labelText, required, type, onChange}: Inputfield
       />
     </div>
   );
-}
+};
 
 /* -----Time and date inputfield---------------------------------------------------- */
 interface TimeDateProps {
@@ -43,7 +52,13 @@ interface TimeDateProps {
   dateChange: (Value: string) => void;
 }
 
-export const TimeDateField = ({id, labelText, required, timeChange, dateChange}: TimeDateProps) => {
+export const TimeDateField = ({
+  id,
+  labelText,
+  required,
+  timeChange,
+  dateChange,
+}: TimeDateProps) => {
   const [time, setTime] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
@@ -76,7 +91,7 @@ export const TimeDateField = ({id, labelText, required, timeChange, dateChange}:
       </div>
     </div>
   );
-}
+};
 
 /* -----Yes No checkbox---------------------------------------------------- */
 interface YesNoProps {
@@ -86,7 +101,7 @@ interface YesNoProps {
   onChange: (checked: boolean) => void;
 }
 
-export const YesNo = ({id, labelText, required, onChange}: YesNoProps) => {
+export const YesNo = ({ id, labelText, required, onChange }: YesNoProps) => {
   /* 0 is when the checkbox is first initialized and therefor is not filled, 1 is Yes, 2 is No */
   const [checked, setChecked] = useState<0 | 1 | 2>(0);
   const [checkRequired, setCheckRequired] = useState<boolean>();
@@ -143,8 +158,7 @@ export const YesNo = ({id, labelText, required, onChange}: YesNoProps) => {
       </div>
     </div>
   );
-}
-
+};
 
 /* ----- TextField ---------------------------------------------------- */
 interface TextFieldProps {
@@ -155,8 +169,13 @@ interface TextFieldProps {
   onChange: (value: string) => void;
 }
 
-export const TextField = ({ id, maxLength, labelText, required, onChange }: TextFieldProps) => {
-
+export const TextField = ({
+  id,
+  maxLength,
+  labelText,
+  required,
+  onChange,
+}: TextFieldProps) => {
   const [text, setText] = useState<string>("");
   const [currentLength, setCurrentLength] = useState<number>(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -189,8 +208,7 @@ export const TextField = ({ id, maxLength, labelText, required, onChange }: Text
       <p>{`${currentLength.toString()}/${maxLength.toString()}`}</p>
     </div>
   );
-}
-
+};
 
 /* ----- ImageField ---------------------------------------------------- */
 interface ImageFieldProps {
@@ -219,108 +237,41 @@ export const ImageField = ({ required, id, labelText }: ImageFieldProps) => {
       />
     </div>
   );
-}
-
+};
 
 /* ----- Location field ---------------------------------------------------- */
-interface LocationFieldProps {
-  setLocation: (location: { address: string; position: { lat: number; lng: number } }) => void;
-}
+interface LocationFieldProps {}
 
-export const LocationField = ({ setLocation }: LocationFieldProps) => {
-  const [position, setPosition] = useState<{lat:number, lng:number}>({lat: 0, lng: 0});
-  const [address, setAddress] = useState<string>("")
-
+export const LocationField = ({}: LocationFieldProps) => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
   });
 
-  useEffect(() => {
-    setLocation({address, position})
-  }, [position, address]);
-
-  useEffect(() => {
-    (async () => {
-      if (address) {
-        const results = await getGeocode({ address });
-        const newPosition = await getLatLng(results[0]);
-        setPosition(newPosition);
-      }
-    })();
-  }, [address]);
-
-  useEffect(() => {
-    (async () => {
-      const results = await getGeocode({ location: position });
-      setAddress(results[0].formatted_address);
-    })();
-  }, [position]);
-
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-      })
-    }
-    else {
-      const country = JSON.parse(sessionStorage.getItem("country"))
-      if (country != null) {
-        setPosition(country.location)
-      }
-    }
-
-  }, [])
-
-  if (loadError) {
-    <div>
-      <p>Error loading google maps</p>
-    </div>
-  }
-  else if (isLoaded) {
-    return ( 
+  if (loadError)
+    return (
       <div>
-        <Inputfield 
-        id="addressInput"
-        labelText="Enter address of accident or drag the marker on Google maps"
-        required={true}
-        type="text"
-        onChange={setAddress}
-        />
-        <GoogleMap
-        center={position}
-        zoom={5}
-        mapContainerStyle={{
-          height: "100%",
-          width: "100%",
-        }}
-        options={{
-          fullscreenControl: false,
-          streetViewControl: false,
-          zoomControl: false,
-        }}
-        >
-          <Marker 
-          position={position}
-          draggable={true}
-          onDragEnd={(event) => setPosition({lat: event.latLng.lat(), lng: event.latLng.lng()})}
-          />
-        </GoogleMap>
+        <p>error loading maps</p>
       </div>
-    )
-  }
-  else (
-    <div>
-      <p>Loading Google Maps...</p>
-    </div>
-  )
+    );
+  else if (isLoaded)
+    return (
+      <GoogleMap
+        zoom={5}
+        center={{ lat: 0, lng: 0 }}
+        mapContainerStyle={{ height: "100%", width: "100%" }}
+      >
+        <Marker position={{ lat: 0, lng: 0 }} draggable={true} />
+      </GoogleMap>
+    );
+  else½
+    return (
+      <div>
+        <p>loding maps</p>
+      </div>
+    );
+};
 
-}
 /* interface AddressFieldProps {
   id: string;
   labelText: string;
@@ -397,4 +348,3 @@ export const AddressField= ({ id, labelText, required, onChange }: AddressFieldP
 
 TODO: Fix the google maps integration, so the fields load probably, all google maps inputfields 
 should be inside this GoogleMapsField. Maybe make new file called google_maps_fields */
-
