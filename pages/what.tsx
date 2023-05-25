@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Inputfield, LocationField, TimeDateField, YesNo } from "../components/custom_inputfields";
+import {
+  Inputfield,
+  LocationField,
+  TimeDateField,
+  YesNo,
+} from "../components/custom_inputfields";
 import { NavButtons } from "../components/navigation";
 import DriverInfoForm from "../components/whatPage/driver_information_form";
 import { NextPage } from "next";
@@ -11,8 +16,8 @@ const What: NextPage = () => {
   const [accidentTime, setAccidentTime] = useState<string>("");
   const [accidentDate, setAccidentDate] = useState<string>("");
   const [accidentLocation, setAccidentLocation] = useState<{
-    address: string, 
-    position: {lat: number, lng: number}
+    address: string;
+    position: { lat: number; lng: number };
   }>();
 
   /* Defining the classes that the information will be keept in */
@@ -74,9 +79,7 @@ const What: NextPage = () => {
 
       {/* Accident location collection */}
       <div className="w-full h-80">
-        <LocationField 
-        setLocation={setAccidentLocation}
-        />
+        <LocationField setLocation={setAccidentLocation} />
       </div>
     </form>
   );

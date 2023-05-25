@@ -51,6 +51,8 @@ function PhoneNumber() {
           onChange={handlePhoneNumberChange}
           onCountryChange={setCountry}
           country={country}
+          inputStyle={{ backgroundColor: "lightblue" }}
+          className="border-none"
         />
       </div>
     </div>
